@@ -1,0 +1,22 @@
+form {
+  padding: 20px 0 0 20px;
+}
+
+input {
+  border: none;
+  outline: none;
+  margin-left: 5px;
+}
+
+.inputErr {
+  color: red;
+  font-size: 12px;
+}
+
+.blockInput {
+  display: flex;
+}
+
+.listExpenses {
+  padding: 10px 0 0 70px;
+}

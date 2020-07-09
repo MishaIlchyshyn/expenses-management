@@ -4,6 +4,9 @@ import * as actions from "../../store/actions";
 import parser from "../../helpers/parser";
 import s from "./Management.module.scss";
 import { Icon } from "../../icon/Icon";
+import { v4 as uuidv4 } from "uuid";
+import { fixerKey } from "../../config/fixer-key";
+import { Api } from "../../api/Api";
 
 const Management = ({
   expenses,
@@ -16,6 +19,11 @@ const Management = ({
 }) => {
   const [inputValue, setInputValue] = useState("");
   console.log(state);
+  console.log(fixerKey);
+
+  Api.getRatest()
+    .then((res) => res.json())
+    .then((data) => console.log(data));
 
   const onChange = (e) => {
     setInputValue(e.target.value);
@@ -49,7 +57,7 @@ const Management = ({
       </form>
       <div className={s.listExpenses}>
         {expenses.map((expense) => (
-          <p>
+          <p key={uuidv4()}>
             {expense.date} {expense.goods} {expense.price} {expense.currency}
           </p>
         ))}

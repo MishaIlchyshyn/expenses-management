@@ -5,7 +5,7 @@ const urls = {
 };
 
 export const Api = {
-  getRatest() {
-    return fetch(urls.basic + "latest?" + "access_key=" + fixerKey);
+  getRates() {
+    return fetch(urls.basic + "latest?access_key=" + fixerKey);
   },
 };

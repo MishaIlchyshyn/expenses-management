@@ -5,25 +5,23 @@ import parser from "../../helpers/parser";
 import s from "./Management.module.scss";
 import { Icon } from "../../icon/Icon";
 import { v4 as uuidv4 } from "uuid";
-import { fixerKey } from "../../config/fixer-key";
-import { Api } from "../../api/Api";
+import fetchRatesAction from "../../store/fetchRates";
+import { store } from "../../index";
 
 const Management = ({
   expenses,
   error,
-  state,
   onAddExpense,
   onClear,
   onError,
   onList,
+  state,
+  currency,
+  total,
+  pending,
 }) => {
   const [inputValue, setInputValue] = useState("");
   console.log(state);
-  console.log(fixerKey);
-
-  Api.getRatest()
-    .then((res) => res.json())
-    .then((data) => console.log(data));
 
   const onChange = (e) => {
     setInputValue(e.target.value);
@@ -37,12 +35,12 @@ const Management = ({
       onClear(parser(inputValue).date);
     } else if (parser(inputValue).action === "list") {
       onList();
+    } else if (parser(inputValue).action === "total") {
+      store.dispatch(fetchRatesAction(parser(inputValue).date));
     } else {
       onError();
     }
     setInputValue("");
-    console.log(state);
-    console.log(parser(inputValue));
   };
 
   return (
@@ -62,6 +60,17 @@ const Management = ({
           </p>
         ))}
       </div>
+      <div className={s.total}>
+        {pending ? (
+          "Loading..."
+        ) : total ? (
+          <p>
+            {total.toFixed(2)} {currency}
+          </p>
+        ) : (
+          ""
+        )}
+      </div>
     </div>
   );
 };
@@ -71,6 +80,9 @@ const mapStateToProps = (state) => {
     state,
     error: state.error,
     expenses: state.expenses,
+    currency: state.curr,
+    total: state.total,
+    pending: state.pending,
   };
 };
 
@@ -81,6 +93,8 @@ const mapDispatchToProps = (dispatch) => {
     onClear: (date) => dispatch({ type: actions.CLEAR, date: date }),
     onError: () => dispatch({ type: actions.ERROR }),
     onList: () => dispatch({ type: actions.LIST }),
+    onTotal: (currency) =>
+      dispatch({ type: actions.TOTAL, currency: currency }),
   };
 };
 

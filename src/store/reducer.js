@@ -1,6 +1,9 @@
 import * as actions from "./actions";
 
 const initialState = {
+  pending: false,
+  errorRates: null,
+
   expenses: [],
   error: false,
 };
@@ -38,6 +41,29 @@ const reducer = (state = initialState, action) => {
           return 0;
         }),
       };
+
+    case actions.FETCH_RATES_PENDING:
+      return {
+        ...state,
+        pending: true,
+      };
+    case actions.FETCH_RATES_SUCCESS:
+      return {
+        ...state,
+        pending: false,
+        curr: action.curr,
+        total:
+          state.expenses
+            .map((expense) => +expense.price / action.rates[expense.currency])
+            .reduce((a, b) => a + b, 0) * action.rates[action.curr],
+      };
+    case actions.FETCH_RATES_ERROR:
+      return {
+        ...state,
+        pending: false,
+        error: action.error,
+      };
+
     default:
       return state;
   }
